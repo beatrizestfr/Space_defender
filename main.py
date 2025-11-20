@@ -2,6 +2,7 @@
 
 import pygame                 
 from game import settings      
+from game.hud import HUD
 
 
 def run(): # no devuelve nada 
@@ -12,6 +13,10 @@ def run(): # no devuelve nada
     pygame.display.set_caption("Space Defender")
 
     clock = pygame.time.Clock() # helps with the speed of the game
+
+    hud = HUD()
+    score = 123
+    lives = 3
 
     #game loop 
     running = True
@@ -28,6 +33,10 @@ def run(): # no devuelve nada
        # drawing 
         screen.fill(settings.BG_COLOR)  
 
+         # draw HUD test text
+        hud.draw_centered_text(screen, "Hello HUD!", y_offset=-20, large=True)
+        hud.draw_hud(screen, score, lives)
+        
         # Pygame uses a double-buffer system: you draw everything on a hidden surface,
         # and flip() makes that frame visible on the screen.
         pygame.display.flip()
