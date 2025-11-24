@@ -3,6 +3,8 @@
 import pygame                 
 from game import settings      
 from game.hud import HUD
+from game.player import Player      
+from game.bullet import Bullet 
 
 
 def run(): # no devuelve nada 
@@ -18,23 +20,42 @@ def run(): # no devuelve nada
     score = 123
     lives = 3
 
+    player = Player()
+    bullets= []
+
+
     #game loop 
     running = True
     while running:
+        keys = pygame.key.get_pressed()
+        player.handle_input(keys)
         # event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 #if hte users clicks the x , finished
                 running = False
+            
+            if event.type == pygame.KEYDOWN and event.key ==pygame.K_SPACE:
+                bullets.append(Bullet(player.rect.centerx, player.rect.top))
 
         # logic update 
-        # (por ahora no hay nada que actualizar)
+        player.update()
+
+        for bullet in bullets :
+            bullet.update()
+            
+        bullets = [b for b in bullets if not b.off_screen]
+
+        
 
        # drawing 
         screen.fill(settings.BG_COLOR)  
 
-         # draw HUD test text
-        hud.draw_centered_text(screen, "Hello HUD!", y_offset=-20, large=True)
+        player.draw(screen)
+
+        for bullet in bullets:
+            bullet.draw(screen)
+
         hud.draw_hud(screen, score, lives)
         
         # Pygame uses a double-buffer system: you draw everything on a hidden surface,
