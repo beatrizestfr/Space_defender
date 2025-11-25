@@ -5,6 +5,15 @@ from game import settings
 from game.hud import HUD
 from game.player import Player      
 from game.bullet import Bullet 
+from game.enemy import Enemy
+"""
+1- velocidad vaya aumentando segun vaya psando el tiempo
+2- pierdas una vida cada x enemigos que pasen x punto (hacer como una casa)
+3- agregar sonido
+4- agregar pantalla de inicio y de game over
+5- agregar niveles
+
+"""
 
 
 def run(): # no devuelve nada 
@@ -22,11 +31,16 @@ def run(): # no devuelve nada
 
     player = Player()
     bullets= []
+    enemies = []
 
+    frame_count = 0
 
     #game loop 
     running = True
     while running:
+        frame_count += 1
+        if frame_count % 60 == 0:
+            enemies.append(Enemy())
         keys = pygame.key.get_pressed()
         player.handle_input(keys)
         # event handling
@@ -46,7 +60,27 @@ def run(): # no devuelve nada
             
         bullets = [b for b in bullets if not b.off_screen]
 
-        
+        for enemy in enemies:
+            enemy.update()
+
+        enemies = [e for e in enemies if not e.off_screen]
+
+        #if bullet hits enemy
+        for bullet in bullets[:]:
+            for enemy in enemies[:]:
+                 if bullet.rect.colliderect(enemy.rect):
+                    bullets.remove(bullet)
+                    enemies.remove(enemy)
+                    score += 10
+                    break
+
+        #if enemy hits player
+        for enemy in enemies[:]:
+            if enemy.rect.colliderect(player.rect):
+                enemies.remove(enemy)
+                lives -= 1
+                if lives <= 0:
+                    running = False
 
        # drawing 
         screen.fill(settings.BG_COLOR)  
@@ -55,6 +89,10 @@ def run(): # no devuelve nada
 
         for bullet in bullets:
             bullet.draw(screen)
+
+        for enemy in enemies:
+            enemy.draw(screen)
+
 
         hud.draw_hud(screen, score, lives)
         

@@ -1,0 +1,10 @@
+# global values of the game 
+
+WIDTH = 800
+HEIGHT = 600
+FPS = 60
+
+PLAYER_SPEED = 5
+BULLET_SPEED = 10
+ENEMY_SPEED = 3
+BG_COLOR = (5, 5, 20)
